@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: Api precios de productos.
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  '/v1/{country}/products/{product_id}/brand/{brand_id}?date={fecha}':
+    get:
+      parameters:
+        - name: country
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: brand_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fecha
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: el parametro fecha debe llegar con el siguiente formato - "yyyy-MM-dd-HH.mm.ss"
+      responses:
+        '200':
+          description: precio final del producto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDTO'
+        '400':
+          description: estructura en caso de error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    PriceDTO:
+      type: object
+      properties:
+        brandId:
+          type: integer
+          minLength: 1
+        productId:
+          type: integer
+          minLength: 1
+        price:
+          type: number
+          format: float
+        startDate:
+          type: string
+          format: date-time
+        finalDate:
+          type: string
+          format: date-time
+      required:
+        - brandId
+        - productId
+        - price
+        - startDate
+        - finalDate
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: código de error
+        message:
+          type: string
+          description: mensage de error
+        status:
+          type: string
+          description: http status de error.
